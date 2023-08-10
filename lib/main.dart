@@ -16,12 +16,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         fontFamily: GoogleFonts.ubuntu().fontFamily,
-        // appBarTheme: const AppBarTheme(backgroundColor: Colors.deepPurple,foregroundColor: Colors.white),
-        // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        // useMaterial3: true,
       ),
       home: ScreenNotes(),
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }

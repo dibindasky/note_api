@@ -35,14 +35,54 @@ Future<void> getAllNotes() async {
   }
 }
 
-
-Future<bool>deleteNote(String id)async{
-  try{
+Future<bool> deleteNote(String id) async {
+  try {
     print(id);
-        String url = 'https://api.nstack.in/v1/todos/$id';
+    String url = 'https://api.nstack.in/v1/todos/$id';
     final response = await http.delete(Uri.parse(url));
+
     await getAllNotes();
-  }catch(e){
+  } catch (e) {
+    print(e.toString());
+    return false;
+  }
+  return true;
+}
+
+Future<bool> addNote({required Item note}) async {
+  Map<String, dynamic> data = {
+    'title': note.title,
+    'description': note.description,
+    'is_completed': 'false'
+  };
+  try {
+    String url = 'https://api.nstack.in/v1/todos';
+    final response = await http.post(
+      Uri.parse(url),
+      body: data,
+    );
+    if (response.statusCode == 201) {
+      await getAllNotes();
+    }
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+Future<bool> updateNote({required Item note}) async {
+  Map<String, dynamic> data = {
+    'title': note.title,
+    'description': note.description,
+    'is_completed': 'false'
+  };
+  String url = 'https://api.nstack.in/v1/todos/${note.id}';
+  try {
+    final response = await http.put(Uri.parse(url), body: data);
+    if (response.statusCode == 200) {
+      await getAllNotes();
+    }
+  } catch (e) {
     print(e.toString());
     return false;
   }

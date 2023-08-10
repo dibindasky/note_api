@@ -35,6 +35,7 @@ class ScreenNotes extends StatelessWidget {
                 child: ValueListenableBuilder(
               valueListenable: itemsNotifier,
               builder: (context, items, child) => GridView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 shrinkWrap: true,
                 itemCount: items.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -58,7 +59,7 @@ class ScreenNotes extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ScreenEditAdd(),
+              builder: (context) => ScreenEditAdd(action: ActionType.create),
             ),
           );
         },

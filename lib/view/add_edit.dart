@@ -5,18 +5,26 @@ import 'package:flutter/material.dart';
 import '../controller/api_calls.dart';
 import '../model/to_do_model/item.dart';
 
+enum ActionType {
+  update,
+  create,
+}
+
 ValueNotifier<bool> isDeleting = ValueNotifier(false);
+ValueNotifier<bool> isSaving = ValueNotifier(false);
 
 class ScreenEditAdd extends StatelessWidget {
-  ScreenEditAdd({super.key, this.note});
+  ScreenEditAdd({super.key, this.note, required this.action});
 
   final Item? note;
+  final ActionType action;
   final TextEditingController textController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    if (note != null) {
+    if (action == ActionType.update) {
       textController.text = note!.description!;
       titleController.text = note!.title!;
     }
@@ -28,7 +36,7 @@ class ScreenEditAdd extends StatelessWidget {
         backgroundColor: Colors.grey[200],
         actions: [
           Container(
-            width: size.width* 0.20,
+              width: size.width * 0.20,
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   color: Colors.white),
@@ -37,34 +45,63 @@ class ScreenEditAdd extends StatelessWidget {
                 builder: (context, value, child) {
                   return isDeleting.value
                       ? const Center(child: CircularProgressIndicator())
-                      : IconButton(
-                          onPressed: () async {
-                            isDeleting.value = true;
-                            await deleteNote(note!.id!);
-                            isDeleting.value=false;
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(Icons.delete),
-                        );
+                      : ActionType.update == action
+                          ? IconButton(
+                              onPressed: () async {
+                                isDeleting.value = true;
+                                await deleteNote(note!.id!);
+                                isDeleting.value = false;
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.delete),
+                            )
+                          : IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.clear_sharp));
                 },
               )),
           const SizedBox(
             width: 20,
           ),
           Container(
+              width: size.width * 0.23,
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   color: Colors.white),
-              child: TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.check,
-                  color: Colors.black,
-                ),
-                label: const Text(
-                  'Save',
-                  style: TextStyle(color: Colors.black),
-                ),
+              child: ValueListenableBuilder(
+                valueListenable: isSaving,
+                builder: (context, value, child) {
+                  return isSaving.value
+                      ? const Center(child: CircularProgressIndicator())
+                      : TextButton.icon(
+                          onPressed: () async {
+                            if (formKey.currentState!.validate()) {
+                              isSaving.value = true;
+                              if (action == ActionType.create) {
+                                Item noteTemp = Item.create(
+                                    description: textController.text,
+                                    title: titleController.text,
+                                    isCompleted: false);
+                                await addNote(note: noteTemp);
+                              } else {
+                                await updateNote(note: note!);
+                              }
+                              isSaving.value = false;
+                              Navigator.pop(context);
+                            }
+                          },
+                          icon: const Icon(
+                            Icons.check,
+                            color: Colors.black,
+                          ),
+                          label: const Text(
+                            'Save',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        );
+                },
               )),
           const SizedBox(
             width: 20,
@@ -73,41 +110,52 @@ class ScreenEditAdd extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 10,
-              ),
-              TextField(
-                textAlign: TextAlign.center,
-                controller: titleController,
-                decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Title',
-                    suffixIcon: Icon(Icons.edit_outlined)),
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const Divider(
-                color: Colors.white,
-              ),
-              Container(
-                height: size.height * 0.7,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white, width: 2)),
-                margin: const EdgeInsets.all(15),
-                padding: const EdgeInsets.all(5),
-                child: TextField(
-                  maxLines: 35,
-                  controller: textController,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'your notes here',
-                  ),
-                  style: const TextStyle(color: Colors.black),
+          child: Form(
+            key: formKey,
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-            ],
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) return 'title canot be empty';
+                    return null;
+                  },
+                  textAlign: TextAlign.center,
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Title',
+                      suffixIcon: Icon(Icons.edit_outlined)),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const Divider(
+                  color: Colors.white,
+                ),
+                Container(
+                  height: size.height * 0.7,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.white, width: 2)),
+                  margin: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.all(5),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) return 'notes cannot be empty';
+                      return null;
+                    },
+                    maxLines: 35,
+                    controller: textController,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'your notes here',
+                    ),
+                    style: const TextStyle(color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

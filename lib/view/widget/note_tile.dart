@@ -19,7 +19,7 @@ class NoteTile extends StatelessWidget {
       onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ScreenEditAdd(note: note),
+            builder: (context) => ScreenEditAdd(note: note,action: ActionType.update),
           )),
       child: Container(
         padding: const EdgeInsets.all(5),

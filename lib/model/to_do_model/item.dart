@@ -24,6 +24,12 @@ class Item {
     this.updatedAt,
   });
 
+  Item.create({
+    required this.title,
+    required this.description,
+    required this.isCompleted,
+  });
+
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$ItemToJson(this);
