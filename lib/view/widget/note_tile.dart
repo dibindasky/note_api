@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_api/view/add_edit.dart';
+import 'package:todo_api/view/screens/screen_add_edit.dart';
 
 import '../../model/to_do_model/item.dart';
 
@@ -19,7 +19,8 @@ class NoteTile extends StatelessWidget {
       onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ScreenEditAdd(note: note,action: ActionType.update),
+            builder: (context) =>
+                ScreenEditAdd(note: note, action: ActionType.update),
           )),
       child: Container(
         padding: const EdgeInsets.all(5),
@@ -28,22 +29,22 @@ class NoteTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(15),
         ),
         margin: const EdgeInsets.all(5),
-        child:  Column(
+        child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Text(
               note.title!,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            Divider(
+            const Divider(
               color: Colors.white,
             ),
             Text(
               maxLines: 7,
               note.description!,
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
           ],
         ),

@@ -1,9 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:todo_api/controller/business_logic/notes/notes_bloc.dart';
 
-import '../controller/api_calls.dart';
-import '../model/to_do_model/item.dart';
+import '../../model/to_do_model/item.dart';
 
 enum ActionType {
   update,
@@ -49,7 +50,8 @@ class ScreenEditAdd extends StatelessWidget {
                           ? IconButton(
                               onPressed: () async {
                                 isDeleting.value = true;
-                                await deleteNote(note!.id!);
+                                context.read<NotesBloc>().add(DeleteNoteEVent(id: note!.id!));
+                                // await deleteNote(note!.id!);
                                 isDeleting.value = false;
                                 Navigator.pop(context);
                               },
@@ -84,9 +86,11 @@ class ScreenEditAdd extends StatelessWidget {
                                     description: textController.text,
                                     title: titleController.text,
                                     isCompleted: false);
-                                await addNote(note: noteTemp);
+                                // await addNote(note: noteTemp);
+                                context.read<NotesBloc>().add(AddNoteEvent(model: noteTemp));
                               } else {
-                                await updateNote(note: note!);
+                                context.read<NotesBloc>().add(UpdateNoteEvent(model: note!));
+                                // await updateNote(note: note!);
                               }
                               isSaving.value = false;
                               Navigator.pop(context);
