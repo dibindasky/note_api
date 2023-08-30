@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../controller/business_logic/notes/notes_bloc.dart';
@@ -15,6 +14,7 @@ class ScreenNotes extends StatelessWidget {
       context.read<NotesBloc>().add(ReCallApiEvent());
     });
     final size = MediaQuery.of(context).size;
+    print('in notes screen builder');
     return Scaffold(
       key: _key,
       backgroundColor: Colors.grey[100],
@@ -36,17 +36,17 @@ class ScreenNotes extends StatelessWidget {
             Expanded(
               child: BlocBuilder<NotesBloc, NotesState>(
                 builder: (context, state) {
+                  print('in grid builder');
                   return GridView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     shrinkWrap: true,
                     itemCount: state.notesList.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, childAspectRatio: 1 / 1.3),
+                      crossAxisCount: 2,
+                    ),
                     itemBuilder: (context, index) {
-                      int color = Random().nextInt(Colors.primaries.length);
                       return NoteTile(
-                        color: color,
                         note: state.notesList[index],
                       );
                     },
