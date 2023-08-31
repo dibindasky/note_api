@@ -2,9 +2,13 @@ part of 'notes_bloc.dart';
 
 class NotesState {
   List<Item> notesList;
-  NotesState({required this.notesList});
+  bool isLoading;
+  bool isSaving;
+  bool isDeleting;
+  NotesState({required this.notesList, this.isLoading = false,this.isDeleting=false,this.isSaving=false});
 }
 
 final class NotesInitial extends NotesState {
   NotesInitial() : super(notesList: <Item>[]);
 }
+

@@ -28,11 +28,15 @@ class ApiCalls {
       String url = 'https://api.nstack.in/v1/todos/$id';
       final response = await http.delete(Uri.parse(url));
       print(response.statusCode);
-      await getAllNotes();
+      if (response.statusCode == 200) {
+        await getAllNotes();
+
+        return true;
+      }
     } catch (e) {
       return false;
     }
-    return true;
+    return false;
   }
 
   Future<bool> addNote({required Item note}) async {
@@ -47,7 +51,7 @@ class ApiCalls {
         Uri.parse(url),
         body: data,
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         return true;
       }
     } catch (e) {
