@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_api/controller/api/api_calls.dart';
 
-import '../../../model/to_do_model/item.dart';
+import '../../model/to_do_model/item.dart';
+import '../../services/api/api_calls.dart';
 
 part 'notes_event.dart';
 part 'notes_state.dart';

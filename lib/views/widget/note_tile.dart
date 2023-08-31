@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:todo_api/view/screens/screen_add_edit.dart';
+import 'package:todo_api/views/screens/screen_add_edit.dart';
 
 import '../../model/to_do_model/item.dart';
 

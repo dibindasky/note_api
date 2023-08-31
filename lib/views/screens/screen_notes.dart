@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../business_logic/notes/notes_bloc.dart';
+import '../../controller/notes/notes_bloc.dart';
 import 'screen_add_edit.dart';
 import '../widget/note_tile.dart';
 
 class ScreenNotes extends StatelessWidget {
   ScreenNotes({super.key});
-  
+
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   @override

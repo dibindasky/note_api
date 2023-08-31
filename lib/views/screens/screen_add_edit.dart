@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_api/business_logic/notes/notes_bloc.dart';
 
+import '../../controller/notes/notes_bloc.dart';
 import '../../model/to_do_model/item.dart';
 
 enum ActionType {
@@ -48,7 +48,7 @@ class ScreenEditAdd extends StatelessWidget {
                             context
                                   .read<NotesBloc>()
                                   .add(DeleteNoteEVent(id: note!.id!));
-                                  
+
                               Navigator.pop(context);
                             },
                             icon: const Icon(Icons.delete),
