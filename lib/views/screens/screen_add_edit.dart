@@ -1,9 +1,7 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_api/controller/business_logic/notes/notes_bloc.dart';
 
+import '../../controller/notes/notes_bloc.dart';
 import '../../model/to_do_model/item.dart';
 
 enum ActionType {
@@ -25,11 +23,11 @@ class ScreenEditAdd extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('build => ()');
     if (action == ActionType.update) {
       textController.text = note!.description!;
       titleController.text = note!.title!;
     }
-
     final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.grey[200],
@@ -37,33 +35,33 @@ class ScreenEditAdd extends StatelessWidget {
         backgroundColor: Colors.grey[200],
         actions: [
           Container(
-              width: size.width * 0.20,
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: Colors.white),
-              child: ValueListenableBuilder(
-                valueListenable: isDeleting,
-                builder: (context, value, child) {
-                  return isDeleting.value
-                      ? const Center(child: CircularProgressIndicator())
-                      : ActionType.update == action
-                          ? IconButton(
-                              onPressed: () async {
-                                isDeleting.value = true;
-                                context.read<NotesBloc>().add(DeleteNoteEVent(id: note!.id!));
-                                // await deleteNote(note!.id!);
-                                isDeleting.value = false;
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(Icons.delete),
-                            )
-                          : IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              icon: const Icon(Icons.clear_sharp));
-                },
-              )),
+            width: size.width * 0.20,
+            decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: Colors.white),
+            child: BlocBuilder<NotesBloc, NotesState>(
+              builder: (context, state) {
+                return state.isDeleting
+                    ? const Center(child: CircularProgressIndicator())
+                    : ActionType.update == action
+                        ? IconButton(
+                            onPressed: () async {
+                            context
+                                  .read<NotesBloc>()
+                                  .add(DeleteNoteEVent(id: note!.id!));
+
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(Icons.delete),
+                          )
+                        : IconButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            icon: const Icon(Icons.clear_sharp));
+              },
+            ),
+          ),
           const SizedBox(
             width: 20,
           ),
@@ -72,27 +70,28 @@ class ScreenEditAdd extends StatelessWidget {
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                   color: Colors.white),
-              child: ValueListenableBuilder(
-                valueListenable: isSaving,
-                builder: (context, value, child) {
-                  return isSaving.value
+              child: BlocBuilder<NotesBloc, NotesState>(
+                builder: (context, state) {
+                  return state.isSaving
                       ? const Center(child: CircularProgressIndicator())
                       : TextButton.icon(
                           onPressed: () async {
                             if (formKey.currentState!.validate()) {
-                              isSaving.value = true;
                               if (action == ActionType.create) {
                                 Item noteTemp = Item.create(
                                     description: textController.text,
                                     title: titleController.text,
                                     isCompleted: false);
                                 // await addNote(note: noteTemp);
-                                context.read<NotesBloc>().add(AddNoteEvent(model: noteTemp));
+                                context
+                                    .read<NotesBloc>()
+                                    .add(AddNoteEvent(model: noteTemp));
                               } else {
-                                context.read<NotesBloc>().add(UpdateNoteEvent(model: note!));
+                                context
+                                    .read<NotesBloc>()
+                                    .add(UpdateNoteEvent(model: note!));
                                 // await updateNote(note: note!);
                               }
-                              isSaving.value = false;
                               Navigator.pop(context);
                             }
                           },

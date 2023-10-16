@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'controller/business_logic/notes/notes_bloc.dart';
-import 'view/screens/screen_notes.dart';
+import 'controller/notes/notes_bloc.dart';
+import 'views/screens/screen_notes.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+   MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => NotesBloc(),
+    return MultiBlocProvider(providers: [
+      BlocProvider(create: (context) => NotesBloc()),
+      
+    ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(

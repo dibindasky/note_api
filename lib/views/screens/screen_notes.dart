@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../controller/business_logic/notes/notes_bloc.dart';
+import '../../controller/notes/notes_bloc.dart';
 import 'screen_add_edit.dart';
 import '../widget/note_tile.dart';
 
 class ScreenNotes extends StatelessWidget {
   ScreenNotes({super.key});
+
   final GlobalKey<ScaffoldState> _key = GlobalKey();
 
   @override
@@ -37,20 +38,27 @@ class ScreenNotes extends StatelessWidget {
               child: BlocBuilder<NotesBloc, NotesState>(
                 builder: (context, state) {
                   print('in grid builder');
-                  return GridView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    shrinkWrap: true,
-                    itemCount: state.notesList.length,
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    itemBuilder: (context, index) {
-                      return NoteTile(
-                        note: state.notesList[index],
-                      );
-                    },
-                  );
+                  if (state.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }else if(state.notesList.isEmpty){
+                    return const Center(child: Text('List is empty'),);
+                  }
+                  else{
+                    return GridView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      shrinkWrap: true,
+                      itemCount: state.notesList.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemBuilder: (context, index) {
+                        return NoteTile(
+                          note: state.notesList[index],
+                        );
+                      },
+                    );
+                  }
                 },
               ),
             ),
