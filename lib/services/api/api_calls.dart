@@ -10,6 +10,7 @@ class ApiCalls {
     try {
       String url = 'https://api.nstack.in/v1/todos';
       final response = await http.get(Uri.parse(url));
+            print(response.statusCode);
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       final data = ToDoModel.fromJson(json);
       if (data.items != null) {
@@ -21,6 +22,29 @@ class ApiCalls {
       return <Item>[];
     }
     return temp;
+  }
+
+  Future<bool> addNote({required Item note}) async {
+    Map<String, dynamic> data = {
+      'title': note.title,
+      'description': note.description,
+      'is_completed': 'false'
+    };
+    try {
+      String url = 'https://api.nstack.in/v1/todos';
+      final response = await http.post(
+        Uri.parse(url),
+        body: data,
+      );
+            print(response.statusCode);
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
 
   Future<bool> deleteNote(String id) async {
@@ -37,27 +61,6 @@ class ApiCalls {
       return false;
     }
     return false;
-  }
-
-  Future<bool> addNote({required Item note}) async {
-    Map<String, dynamic> data = {
-      'title': note.title,
-      'description': note.description,
-      'is_completed': 'false'
-    };
-    try {
-      String url = 'https://api.nstack.in/v1/todos';
-      final response = await http.post(
-        Uri.parse(url),
-        body: data,
-      );
-      if (response.statusCode == 201 || response.statusCode == 200) {
-        return true;
-      }
-    } catch (e) {
-      return false;
-    }
-    return true;
   }
 
   Future<bool> updateNote({required Item note}) async {
@@ -82,4 +85,5 @@ class ApiCalls {
     }
     return true;
   }
+
 }
